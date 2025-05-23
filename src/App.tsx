@@ -1,24 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import './Lines.css';
+import InputLine from './InputLine';
+import {DisplayLine, DisplayLineProps} from './DisplayLine';
+import { useState } from 'react';
 
 function App() {
+  const [displayLines, setDisplayLines] = useState<DisplayLineProps[]>([]);
+
+  const handleNewLine = (text: string) => {
+    setDisplayLines((prevLines) => [...prevLines, { text }]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {displayLines.map((line) => (
+      <DisplayLine key={crypto.randomUUID()} text={line.text} />
+      ))}
+      <InputLine handleNewLine={handleNewLine}/>
     </div>
   );
 }

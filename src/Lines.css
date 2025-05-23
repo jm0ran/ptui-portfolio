@@ -1,0 +1,23 @@
+#input-field{
+    appearance: none;
+    border: none;
+    background: none;
+    outline: none;
+    background-color: black;
+    font-size: 1em;
+    color: inherit;
+    flex: 1;
+}
+
+#input-prefix{
+    display: inline-block;
+}
+
+.generic-line{
+    width: 100%;
+    background-color: black;
+    color: white;
+    font-size: 1em;
+    display: flex;
+}
+
