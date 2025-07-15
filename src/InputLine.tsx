@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useRef, useImperativeHandle, forwardRef } from "react";
 
 interface InputLineProps {
     handleNewLine: (text: string) => void;
+}
+
+export interface InputLineRef {
+    focus: () => void;
 }
 
 enum InputLineState {
@@ -10,8 +14,15 @@ enum InputLineState {
     DISABLED
 }
 
-const InputLine = ({ handleNewLine }: InputLineProps) => {
+const InputLine = forwardRef<InputLineRef, InputLineProps>(({ handleNewLine }, ref) => {
     const [inputState, setInputState] = React.useState(InputLineState.RECEIVING);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            inputRef.current?.focus();
+        },
+    }));
 
     const handleInput = (event: React.FormEvent) => {
         if(inputState !== InputLineState.RECEIVING) {
@@ -34,10 +45,10 @@ const InputLine = ({ handleNewLine }: InputLineProps) => {
     return (
         <form className="generic-line" onSubmit={(event => handleSubmit(event, handleNewLine))}>
             <span>jm0ran&gt;&nbsp;</span>
-            <input autoComplete="off" id="input-field" type="text" onBeforeInput={handleInput}/>
+            <input ref={inputRef} autoComplete="off" id="input-field" type="text" onBeforeInput={handleInput}/>
         </form>
     )
-}
+});
 
 
 
