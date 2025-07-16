@@ -134,6 +134,9 @@ export class CommandProcessor {
         { text: '\n  ', color: '#ffffff' },
         { text: 'help', color: '#ffff00', bold: true },
         { text: '                  Show this help message', color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'exit', color: '#ffff00', bold: true },
+        { text: '                  Close the browser tab', color: '#ffffff' },
         { text: '\n\n', color: '#ffffff' },
         { text: 'Personal Commands:', color: '#61dafb', bold: true },
         { text: '\n  ', color: '#ffffff' },
@@ -246,6 +249,15 @@ export class CommandProcessor {
     }
   }
 
+  private exit(): CommandResult {
+    window.close();
+    return {
+      text: [
+        { text: 'Closing tab...', color: '#ff6b6b', bold: true }
+      ]
+    };
+  }
+
   executeCommand(command: string): CommandResult {
     const parts = command.trim().split(/\s+/);
     const cmd = parts[0].toLowerCase();
@@ -267,6 +279,8 @@ export class CommandProcessor {
         return this.whoami();
       case 'open':
         return this.open(parts[1]);
+      case 'exit':
+        return this.exit();
       default:
         return { text: `Command not found: ${command}` };
     }

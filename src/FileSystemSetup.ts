@@ -4,8 +4,10 @@ export function createFileSystem(): Folder {
   // Create root folder
   const root = new Folder('/');
   
-  // Create jobs folder
+  // Create folders
   const jobsFolder = new Folder('jobs');
+  const projectsFolder = new Folder('projects');
+  const academicsFolder = new Folder('academics');
   
   // Create job files with real experience content
   const lockheedFile = new File('lockheed.txt', 'LOCKHEED MARTIN - Software Engineering Intern\nLocation: Moorestown, NJ\nDuration: May 2025 - August 2025\n\nKey Accomplishments:\n• Enhanced existing lab debug tool to support semi-automated issue reporting\n• Increased consistency and detail of problem reports, reducing time spent per defect\n• Resolved various bugs and implemented changes for project compliance\n• Worked primarily in Java programming language\n• Led a team of 3 interns to develop hypersonic threat assessment system\n• Used Python and Matlab for threat assessment system development\n• Gained experience in defense/aerospace industry software development');
@@ -18,6 +20,8 @@ export function createFileSystem(): Folder {
   jobsFolder.addChild(twoRoadsFile);
   
   root.addChild(jobsFolder);
+  root.addChild(projectsFolder);
+  root.addChild(academicsFolder);
   
   return root;
 }
