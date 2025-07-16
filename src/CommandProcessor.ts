@@ -139,6 +139,9 @@ export class CommandProcessor {
         { text: '\n  ', color: '#ffffff' },
         { text: 'whoami', color: '#ffff00', bold: true },
         { text: '               Display personal information', color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'open <target>', color: '#ffff00', bold: true },
+        { text: '          Open LinkedIn or GitHub profile', color: '#ffffff' },
         { text: '\n\n', color: '#ffffff' },
         { text: 'Tips:', color: '#ff6b35', bold: true },
         { text: '\n• Use ', color: '#ffffff' },
@@ -187,24 +190,60 @@ export class CommandProcessor {
         { text: 'jm0ran', color: '#32cd32', underline: true, link: 'https://github.com/jm0ran' }
       ],
       graphic: [
-        '        ╭─────────────╮',
-        '        │  ┌─────────┐ │',
-        '        │  │ >_      │ │',
-        '        │  │         │ │',
-        '        │  │  ●   ●  │ │',
-        '        │  │    ○    │ │',
-        '        │  │  \\___/  │ │',
-        '        │  │         │ │',
-        '        │  └─────────┘ │',
-        '        │      ___     │',
-        '        │     /   \\    │',
-        '        │    │  ●  │   │',
-        '        │     \\___/    │',
-        '        ╰─────────────╯',
-        '            ████████',
-        '          ██████████████'
+        '   /$$$$$ /$$$$$$$  /$$      /$$',
+        '   |__  $$| $$__  $$| $$$    /$$$',
+        '      | $$| $$  \\ $$| $$$$  /$$$$',
+        '      | $$| $$  | $$| $$ $$/$$ $$',
+        ' /$$  | $$| $$  | $$| $$  $$$| $$',
+        '| $$  | $$| $$  | $$| $$\\  $ | $$',
+        '|  $$$$$$/| $$$$$$$/| $$ \\/  | $$',
+        ' \\______/ |_______/ |__/     |__/'
       ]
     };
+  }
+
+  private open(target: string): CommandResult {
+    if (!target) {
+      return {
+        text: [
+          { text: 'Usage: ', color: '#ffffff' },
+          { text: 'open <target>', color: '#ffff00', bold: true },
+          { text: '\n\nAvailable targets:', color: '#ffffff' },
+          { text: '\n  ', color: '#ffffff' },
+          { text: 'linkedin', color: '#0077b5', bold: true },
+          { text: '    Open LinkedIn profile', color: '#ffffff' },
+          { text: '\n  ', color: '#ffffff' },
+          { text: 'github', color: '#32cd32', bold: true },
+          { text: '      Open GitHub profile', color: '#ffffff' }
+        ]
+      };
+    }
+
+    switch (target.toLowerCase()) {
+      case 'linkedin':
+        window.open('https://linkedin.com/in/joedmoran', '_blank');
+        return {
+          text: [
+            { text: 'Opening LinkedIn profile...', color: '#0077b5', bold: true }
+          ]
+        };
+      case 'github':
+        window.open('https://github.com/jm0ran', '_blank');
+        return {
+          text: [
+            { text: 'Opening GitHub profile...', color: '#32cd32', bold: true }
+          ]
+        };
+      default:
+        return {
+          text: [
+            { text: `Unknown target: ${target}`, color: '#ff6b6b' },
+            { text: '\nUse ', color: '#ffffff' },
+            { text: 'open', color: '#ffff00', bold: true },
+            { text: ' without arguments to see available targets.', color: '#ffffff' }
+          ]
+        };
+    }
   }
 
   executeCommand(command: string): CommandResult {
@@ -226,6 +265,8 @@ export class CommandProcessor {
         return this.help();
       case 'whoami':
         return this.whoami();
+      case 'open':
+        return this.open(parts[1]);
       default:
         return { text: `Command not found: ${command}` };
     }
