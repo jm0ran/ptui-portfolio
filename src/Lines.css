@@ -5,8 +5,13 @@
     outline: none;
     background-color: black;
     font-size: 1em;
+    font-family: inherit;
     color: inherit;
     flex: 1;
+    min-width: 0;
+    margin-left: 0.5ch;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 #input-prefix{
@@ -19,6 +24,16 @@
     color: white;
     font-size: 1em;
     display: block;
+}
+
+.input-line{
+    width: 100%;
+    background-color: black;
+    color: white;
+    font-size: 1em;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
 }
 
 .two-column-line{

@@ -72,6 +72,47 @@ export class CommandProcessor {
     return { text: '' };
   }
 
+  // File structure visualization
+  private tree(): CommandResult {
+    const treeSegments: ColoredSegment[] = [];
+    
+    // Start with current directory name
+    treeSegments.push({ text: this.currentDirectory.getName() === '/' ? '.' : this.currentDirectory.getName(), color: '#61dafb', bold: true });
+    treeSegments.push({ text: '\n', color: '#ffffff' });
+    
+    // Build tree recursively
+    this.buildTreeRecursive(this.currentDirectory, '', true, treeSegments);
+    
+    return { text: treeSegments };
+  }
+
+  private buildTreeRecursive(folder: Folder, prefix: string, isLast: boolean, segments: ColoredSegment[]): void {
+    const children = folder.getChildren();
+    
+    children.forEach((child, index) => {
+      const isLastChild = index === children.length - 1;
+      const currentPrefix = prefix + (isLast ? '    ' : '│   ');
+      const connector = isLastChild ? '└── ' : '├── ';
+      
+      // Add the tree connector
+      segments.push({ text: prefix + connector, color: '#888888' });
+      
+      // Add the file/folder name with appropriate styling
+      if (child.isDirectory()) {
+        segments.push({ text: child.getName() + '/', color: '#61dafb', bold: true });
+      } else {
+        segments.push({ text: child.getName(), color: '#ffffff' });
+      }
+      
+      segments.push({ text: '\n', color: '#ffffff' });
+      
+      // Recursively process subdirectories
+      if (child.isDirectory()) {
+        this.buildTreeRecursive(child as Folder, currentPrefix, isLastChild, segments);
+      }
+    });
+  }
+
   // File operations
   private cat(filename: string): CommandResult {
     if (!filename) {
@@ -110,41 +151,44 @@ export class CommandProcessor {
         { text: '\n\n', color: '#ffffff' },
         { text: 'Navigation Commands:', color: '#61dafb', bold: true },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'pwd', color: '#ffff00', bold: true },
-        { text: '                    Print working directory', color: '#ffffff' },
+        { text: 'pwd                   ', color: '#ffff00', bold: true },
+        { text: 'Print working directory', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'ls', color: '#ffff00', bold: true },
-        { text: '                     List directory contents', color: '#ffffff' },
+        { text: 'ls                    ', color: '#ffff00', bold: true },
+        { text: 'List directory contents', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'cd <directory>', color: '#ffff00', bold: true },
-        { text: '         Change to specified directory', color: '#ffffff' },
+        { text: 'tree                  ', color: '#ffff00', bold: true },
+        { text: 'Display directory tree structure', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'cd ..', color: '#ffff00', bold: true },
-        { text: '                 Go to parent directory', color: '#ffffff' },
+        { text: 'cd <directory>        ', color: '#ffff00', bold: true },
+        { text: 'Change to specified directory', color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'cd ..                 ', color: '#ffff00', bold: true },
+        { text: 'Go to parent directory', color: '#ffffff' },
         { text: '\n\n', color: '#ffffff' },
         { text: 'File Commands:', color: '#61dafb', bold: true },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'cat <filename>', color: '#ffff00', bold: true },
-        { text: '         Display file contents', color: '#ffffff' },
+        { text: 'cat <filename>        ', color: '#ffff00', bold: true },
+        { text: 'Display file contents', color: '#ffffff' },
         { text: '\n\n', color: '#ffffff' },
         { text: 'System Commands:', color: '#61dafb', bold: true },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'clear', color: '#ffff00', bold: true },
-        { text: '                 Clear the terminal screen', color: '#ffffff' },
+        { text: 'clear                 ', color: '#ffff00', bold: true },
+        { text: 'Clear the terminal screen', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'help', color: '#ffff00', bold: true },
-        { text: '                  Show this help message', color: '#ffffff' },
+        { text: 'help                  ', color: '#ffff00', bold: true },
+        { text: 'Show this help message', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'exit', color: '#ffff00', bold: true },
-        { text: '                  Close the browser tab', color: '#ffffff' },
+        { text: 'exit                  ', color: '#ffff00', bold: true },
+        { text: 'Close the browser tab', color: '#ffffff' },
         { text: '\n\n', color: '#ffffff' },
         { text: 'Personal Commands:', color: '#61dafb', bold: true },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'whoami', color: '#ffff00', bold: true },
-        { text: '               Display personal information', color: '#ffffff' },
+        { text: 'whoami                ', color: '#ffff00', bold: true },
+        { text: 'Display personal information', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
-        { text: 'open <target>', color: '#ffff00', bold: true },
-        { text: '          Open LinkedIn or GitHub profile', color: '#ffffff' },
+        { text: 'open <target>         ', color: '#ffff00', bold: true },
+        { text: 'Open LinkedIn or GitHub profile', color: '#ffffff' },
         { text: '\n\n', color: '#ffffff' },
         { text: 'Tips:', color: '#ff6b35', bold: true },
         { text: '\n• Use ', color: '#ffffff' },
@@ -273,6 +317,8 @@ export class CommandProcessor {
         return this.cd(parts[1]);
       case 'cat':
         return this.cat(parts[1]);
+      case 'tree':
+        return this.tree();
       case 'help':
         return this.help();
       case 'whoami':

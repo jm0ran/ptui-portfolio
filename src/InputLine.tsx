@@ -113,7 +113,7 @@ const InputLine = forwardRef<InputLineRef, InputLineProps>(({ handleNewLine, cur
     ];
 
     return (
-        <form className="generic-line" onSubmit={(event => handleSubmit(event, handleNewLine))}>
+        <form className="input-line" onSubmit={(event => handleSubmit(event, handleNewLine))}>
             <span>{renderColoredText(promptSegments)}</span>
             <input ref={inputRef} autoComplete="off" id="input-field" type="text" onBeforeInput={handleInput} onKeyDown={handleKeyDown}/>
         </form>
