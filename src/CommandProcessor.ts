@@ -4,14 +4,20 @@ import { ColoredSegment, CommandResult } from './types';
 export class CommandProcessor {
   private currentDirectory: Folder;
   private setCurrentDirectory: (dir: Folder) => void;
+  private locationData: any;
 
-  constructor(currentDirectory: Folder, setCurrentDirectory: (dir: Folder) => void) {
+  constructor(currentDirectory: Folder, setCurrentDirectory: (dir: Folder) => void, locationData: any = null) {
     this.currentDirectory = currentDirectory;
     this.setCurrentDirectory = setCurrentDirectory;
+    this.locationData = locationData;
   }
 
   updateCurrentDirectory(dir: Folder): void {
     this.currentDirectory = dir;
+  }
+
+  updateLocationData(data: any): void {
+    this.locationData = data;
   }
 
   // System commands
@@ -176,6 +182,9 @@ export class CommandProcessor {
         { text: '\n  ', color: '#ffffff' },
         { text: 'help                  ', color: '#ffff00', bold: true },
         { text: 'Show this help message', color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'status                ', color: '#ffff00', bold: true },
+        { text: 'Display system status and user information', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
         { text: 'exit                  ', color: '#ffff00', bold: true },
         { text: 'Close the browser tab', color: '#ffffff' },
@@ -346,6 +355,59 @@ export class CommandProcessor {
     };
   }
 
+  private status(): CommandResult {
+    const now = new Date();
+    const uptime = now.getTime() - (window as any).startTime;
+    const uptimeSeconds = Math.floor(uptime / 1000);
+    const uptimeMinutes = Math.floor(uptimeSeconds / 60);
+    const uptimeHours = Math.floor(uptimeMinutes / 60);
+    
+    // Use stored location data or show N/A
+    const userInfo = this.locationData 
+      ? `${this.locationData.ip} (${this.locationData.city}, ${this.locationData.region}, ${this.locationData.country_name})`
+      : 'N/A';
+
+    return {
+      text: [
+        { text: 'Session Information:', color: '#61dafb', bold: true },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Current Time:     ', color: '#ffff00', bold: true },
+        { text: now.toLocaleString(), color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Session Uptime:   ', color: '#ffff00', bold: true },
+        { text: `${uptimeHours}h ${uptimeMinutes % 60}m ${uptimeSeconds % 60}s`, color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'User Location:    ', color: '#ffff00', bold: true },
+        { text: userInfo, color: '#ffffff' },
+        { text: '\n\n', color: '#ffffff' },
+        { text: 'Browser Information:', color: '#61dafb', bold: true },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'User Agent:       ', color: '#ffff00', bold: true },
+        { text: navigator.userAgent, color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Language:         ', color: '#ffff00', bold: true },
+        { text: navigator.language, color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Platform:         ', color: '#ffff00', bold: true },
+        { text: navigator.platform, color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Screen Resolution:', color: '#ffff00', bold: true },
+        { text: `${window.screen.width}x${window.screen.height}`, color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Viewport Size:    ', color: '#ffff00', bold: true },
+        { text: `${window.innerWidth}x${window.innerHeight}`, color: '#ffffff' },
+        { text: '\n\n', color: '#ffffff' },
+        { text: 'Connection Information:', color: '#61dafb', bold: true },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Online Status:    ', color: '#ffff00', bold: true },
+        { text: navigator.onLine ? 'Connected' : 'Offline', color: navigator.onLine ? '#32cd32' : '#ff6b6b' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Cookies Enabled:  ', color: '#ffff00', bold: true },
+        { text: navigator.cookieEnabled ? 'Yes' : 'No', color: navigator.cookieEnabled ? '#32cd32' : '#ff6b6b' }
+      ]
+    };
+  }
+
   private exit(): CommandResult {
     window.close();
     return {
@@ -378,6 +440,8 @@ export class CommandProcessor {
         return this.whoami();
       case 'skills':
         return this.skills();
+      case 'status':
+        return this.status();
       case 'open':
         return this.open(parts[1]);
       case 'exit':

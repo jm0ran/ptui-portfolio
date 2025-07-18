@@ -13,8 +13,9 @@ function App() {
   const [currentDirectory, setCurrentDirectory] = useState<Folder>(fileSystemRoot);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [showMobilePopup, setShowMobilePopup] = useState(false);
+  const [locationData, setLocationData] = useState<any>(null);
   const inputRef = useRef<InputLineRef>(null);
-  const commandProcessor = useRef(new CommandProcessor(currentDirectory, setCurrentDirectory));
+  const commandProcessor = useRef(new CommandProcessor(currentDirectory, setCurrentDirectory, locationData));
 
   // Detect mobile device
   const isMobile = () => {
@@ -39,6 +40,18 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // Store start time for uptime calculation
+    (window as any).startTime = Date.now();
+    
+    // Fetch location data asynchronously
+    fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(data => setLocationData(data))
+      .catch(error => {
+        console.log('Failed to fetch location data:', error);
+        setLocationData(null);
+      });
+    
     // Show mobile popup if on mobile device
     if (isMobile()) {
       setShowMobilePopup(true);
@@ -52,6 +65,13 @@ function App() {
     // Update command processor when current directory changes
     commandProcessor.current.updateCurrentDirectory(currentDirectory);
   }, [currentDirectory]);
+
+  useEffect(() => {
+    // Update command processor when location data changes
+    if (locationData) {
+      commandProcessor.current.updateLocationData(locationData);
+    }
+  }, [locationData]);
 
   useEffect(() => {
     // Scroll to bottom when new output is added - Safari-safe calculation
