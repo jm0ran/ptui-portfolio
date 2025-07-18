@@ -54,8 +54,19 @@ function App() {
   }, [currentDirectory]);
 
   useEffect(() => {
-    // Scroll to bottom when new output is added
-    window.scrollTo(0, document.body.scrollHeight);
+    // Scroll to bottom when new output is added - Safari-safe calculation
+    const getMaxScroll = () => {
+      return Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      ) - window.innerHeight;
+    };
+    
+    const maxScroll = getMaxScroll();
+    window.scrollTo(0, Math.min(maxScroll, document.body.scrollHeight));
   }, [displayLines]);
 
   const handleNewLine = (text: string) => {

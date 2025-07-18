@@ -12,6 +12,8 @@
     margin-left: 0.5ch;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    /* Safari baseline alignment fix for empty inputs */
+    padding-bottom: 0.1em;
 }
 
 #input-prefix{
