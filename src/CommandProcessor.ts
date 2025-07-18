@@ -147,8 +147,6 @@ export class CommandProcessor {
   private help(): CommandResult {
     return {
       text: [
-        { text: 'Available Commands:', color: '#00ff00', bold: true },
-        { text: '\n\n', color: '#ffffff' },
         { text: 'Navigation Commands:', color: '#61dafb', bold: true },
         { text: '\n  ', color: '#ffffff' },
         { text: 'pwd                   ', color: '#ffff00', bold: true },
@@ -186,6 +184,9 @@ export class CommandProcessor {
         { text: '\n  ', color: '#ffffff' },
         { text: 'whoami                ', color: '#ffff00', bold: true },
         { text: 'Display personal information', color: '#ffffff' },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'skills                ', color: '#ffff00', bold: true },
+        { text: 'Display technical skills and expertise', color: '#ffffff' },
         { text: '\n  ', color: '#ffffff' },
         { text: 'open <target>         ', color: '#ffff00', bold: true },
         { text: 'Open LinkedIn or GitHub profile', color: '#ffffff' },
@@ -293,6 +294,58 @@ export class CommandProcessor {
     }
   }
 
+  private skills(): CommandResult {
+    return {
+      text: [
+        { text: 'Languages & Frameworks:', color: '#61dafb', bold: true },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Java', color: '#ffff00', bold: true },
+        { text: ' (Spring Boot), ', color: '#ffffff' },
+        { text: 'Python', color: '#ffff00', bold: true },
+        { text: ' (Robot Framework), ', color: '#ffffff' },
+        { text: 'C++', color: '#ffff00', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'Rust', color: '#ffff00', bold: true },
+        { text: ',\n  ', color: '#ffffff' },
+        { text: 'JavaScript', color: '#ffff00', bold: true },
+        { text: ' (Angular, Express), ', color: '#ffffff' },
+        { text: 'PowerShell', color: '#ffff00', bold: true },
+        { text: '\n\n', color: '#ffffff' },
+        { text: 'Tools & Technologies:', color: '#61dafb', bold: true },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Linux', color: '#32cd32', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'Ansible', color: '#32cd32', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'Git', color: '#32cd32', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'Unit Testing', color: '#32cd32', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'UML', color: '#32cd32', bold: true },
+        { text: ',\n  ', color: '#ffffff' },
+        { text: 'Atlassian Suite', color: '#32cd32', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'Microsoft Office Suite', color: '#32cd32', bold: true },
+        { text: ',\n  ', color: '#ffffff' },
+        { text: 'MongoDB', color: '#32cd32', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'PostgreSQL', color: '#32cd32', bold: true },
+        { text: '\n\n', color: '#ffffff' },
+        { text: 'Specialized Skills:', color: '#61dafb', bold: true },
+        { text: '\n  ', color: '#ffffff' },
+        { text: 'Embedded Systems', color: '#ff69b4', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'Web Development', color: '#ff69b4', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'Network Protocols', color: '#ff69b4', bold: true },
+        { text: ',\n  ', color: '#ffffff' },
+        { text: 'Distributed Systems', color: '#ff69b4', bold: true },
+        { text: ', ', color: '#ffffff' },
+        { text: 'AI-Driven Testing', color: '#ff69b4', bold: true }
+      ]
+    };
+  }
+
   private exit(): CommandResult {
     window.close();
     return {
@@ -323,6 +376,8 @@ export class CommandProcessor {
         return this.help();
       case 'whoami':
         return this.whoami();
+      case 'skills':
+        return this.skills();
       case 'open':
         return this.open(parts[1]);
       case 'exit':
