@@ -52,6 +52,27 @@ function App() {
         setLocationData(null);
       });
     
+    // Show welcome message
+    const welcomeMessage: DisplayLineProps = {
+      text: [
+        { text: 'Welcome to Joseph D. Moran\'s Portfolio Terminal!', color: '#00ff00', bold: true },
+        { text: '\n\nQuick Start:', color: '#61dafb', bold: true },
+        { text: '\n• Type ', color: '#ffffff' },
+        { text: 'help', color: '#ffff00', bold: true },
+        { text: ' to see all available commands', color: '#ffffff' },
+        { text: '\n• Type ', color: '#ffffff' },
+        { text: 'whoami', color: '#ffff00', bold: true },
+        { text: ' for personal information', color: '#ffffff' },
+        { text: '\n• Type ', color: '#ffffff' },
+        { text: 'ls', color: '#ffff00', bold: true },
+        { text: ' to see directories, then ', color: '#ffffff' },
+        { text: 'cd <directory>', color: '#ffff00', bold: true },
+        { text: ' to explore', color: '#ffffff' },
+        { text: '\n\n', color: '#ffffff' }
+      ]
+    };
+    setDisplayLines([welcomeMessage]);
+    
     // Show mobile popup if on mobile device
     if (isMobile()) {
       setShowMobilePopup(true);

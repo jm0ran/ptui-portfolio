@@ -204,6 +204,9 @@ export class CommandProcessor {
         { text: '\n• Use ', color: '#ffffff' },
         { text: 'up/down arrows', color: '#32cd32', bold: true },
         { text: ' to navigate command history', color: '#ffffff' },
+        { text: '\n• Press ', color: '#ffffff' },
+        { text: 'tab', color: '#32cd32', bold: true },
+        { text: ' to auto-complete file names', color: '#ffffff' },
         { text: '\n• Try ', color: '#ffffff' },
         { text: 'cd jobs', color: '#32cd32', bold: true },
         { text: ' to explore work experience files', color: '#ffffff' }
