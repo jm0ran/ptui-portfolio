@@ -12,8 +12,15 @@ function App() {
   const [displayLines, setDisplayLines] = useState<DisplayLineProps[]>([]);
   const [currentDirectory, setCurrentDirectory] = useState<Folder>(fileSystemRoot);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [showMobilePopup, setShowMobilePopup] = useState(false);
   const inputRef = useRef<InputLineRef>(null);
   const commandProcessor = useRef(new CommandProcessor(currentDirectory, setCurrentDirectory));
+
+  // Detect mobile device
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           window.innerWidth <= 768;
+  };
 
   useEffect(() => {
     const handleGlobalClick = (event: MouseEvent) => {
@@ -32,6 +39,11 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // Show mobile popup if on mobile device
+    if (isMobile()) {
+      setShowMobilePopup(true);
+    }
+    
     // Focus input field on page load
     inputRef.current?.focus();
   }, []);
@@ -76,6 +88,51 @@ function App() {
 
   return (
     <div>
+      {showMobilePopup && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: '#1a1a1a',
+            border: '1px solid #61dafb',
+            borderRadius: '8px',
+            padding: '15px',
+            width: '90%',
+            maxWidth: 'none',
+            textAlign: 'center',
+            color: '#ffffff',
+            boxSizing: 'border-box',
+            margin: '0 auto'
+          }}>
+            <h3 style={{ color: '#61dafb', marginTop: 0 }}>ℹ️ Mobile Device Detected</h3>
+            <p>This terminal experience is designed for desktop browsers.</p>
+            <p>For the best experience, consider visiting on a desktop computer.</p>
+            <button 
+              onClick={() => setShowMobilePopup(false)}
+              style={{
+                backgroundColor: '#61dafb',
+                color: '#000',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              Continue Anyway
+            </button>
+          </div>
+        </div>
+      )}
       {displayLines.map((line, index) => (
       <DisplayLine key={index} text={line.text} graphic={line.graphic} />
       ))}
