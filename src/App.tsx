@@ -79,7 +79,7 @@ function App() {
       {displayLines.map((line, index) => (
       <DisplayLine key={index} text={line.text} graphic={line.graphic} />
       ))}
-      <InputLine ref={inputRef} handleNewLine={handleNewLine} currentPath={currentDirectory.getPath()} commandHistory={commandHistory}/>
+      <InputLine ref={inputRef} handleNewLine={handleNewLine} currentPath={currentDirectory.getPath()} commandHistory={commandHistory} currentDirectory={currentDirectory}/>
     </div>
   );
 }

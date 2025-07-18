@@ -1,10 +1,12 @@
 import React, { useRef, useImperativeHandle, forwardRef } from "react";
 import { ColoredSegment } from './types';
+import { Folder } from './FileSystem';
 
 interface InputLineProps {
     handleNewLine: (text: string) => void;
     currentPath: string;
     commandHistory: string[];
+    currentDirectory: Folder;
 }
 
 export interface InputLineRef {
@@ -17,10 +19,11 @@ enum InputLineState {
     DISABLED
 }
 
-const InputLine = forwardRef<InputLineRef, InputLineProps>(({ handleNewLine, currentPath, commandHistory }, ref) => {
+const InputLine = forwardRef<InputLineRef, InputLineProps>(({ handleNewLine, currentPath, commandHistory, currentDirectory }, ref) => {
     const [inputState, setInputState] = React.useState(InputLineState.RECEIVING);
     const [historyIndex, setHistoryIndex] = React.useState(-1);
     const [currentInput, setCurrentInput] = React.useState('');
+    const [tabCompletions, setTabCompletions] = React.useState<string[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
 
     useImperativeHandle(ref, () => ({
@@ -35,6 +38,45 @@ const InputLine = forwardRef<InputLineRef, InputLineProps>(({ handleNewLine, cur
         };
     }
 
+    const handleTabCompletion = (inputValue: string): string => {
+        // Don't complete on empty input
+        if (!inputValue.trim()) {
+            return inputValue;
+        }
+
+        // Parse the input to find the part we want to complete
+        const words = inputValue.split(' ');
+        const lastWord = words[words.length - 1];
+        
+        // Check if we're continuing an existing completion session
+        const isCurrentWordACompletion = tabCompletions.includes(lastWord);
+        
+        if (tabCompletions.length === 0 || !isCurrentWordACompletion) {
+            const availableFiles = currentDirectory.getChildNames();
+            const matches = availableFiles.filter(name => 
+                name.toLowerCase().startsWith(lastWord.toLowerCase())
+            ).sort();
+
+            if (matches.length === 0) {
+                return inputValue;
+            }
+
+            setTabCompletions(matches);
+            
+            // Replace the last word with the first match
+            const beforeLastWord = words.slice(0, -1).join(' ');
+            return beforeLastWord + (beforeLastWord ? ' ' : '') + matches[0];
+        } else {
+            // Find current position in completions and cycle to next
+            const currentIndex = tabCompletions.indexOf(lastWord);
+            const nextIndex = (currentIndex + 1) % tabCompletions.length;
+            
+            // Replace the last word with the next match
+            const beforeLastWord = words.slice(0, -1).join(' ');
+            return beforeLastWord + (beforeLastWord ? ' ' : '') + tabCompletions[nextIndex];
+        }
+    }
+
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (inputState !== InputLineState.RECEIVING) {
             event.preventDefault();
@@ -44,7 +86,11 @@ const InputLine = forwardRef<InputLineRef, InputLineProps>(({ handleNewLine, cur
         const input = inputRef.current;
         if (!input) return;
 
-        if (event.key === 'ArrowUp') {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            const completedValue = handleTabCompletion(input.value);
+            input.value = completedValue;
+        } else if (event.key === 'ArrowUp') {
             event.preventDefault();
             if (commandHistory.length === 0) return;
 
@@ -68,6 +114,11 @@ const InputLine = forwardRef<InputLineRef, InputLineProps>(({ handleNewLine, cur
                 // Return to current input
                 setHistoryIndex(-1);
                 input.value = currentInput;
+            }
+        } else {
+            // Reset tab completion on typing keys (but not special keys like Shift, Ctrl, etc.)
+            if (event.key.length === 1 || event.key === 'Backspace' || event.key === 'Delete') {
+                setTabCompletions([]);
             }
         }
     }
